@@ -1,0 +1,24 @@
+linters:
+  disable-all: false
+  enable:
+    - errcheck
+    - forbidigo
+    - goimports
+    - gosec
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - typecheck
+    - unused
+    - wastedassign
+
+linters-settings:
+  errcheck:
+    check-type-assertions: true
+
+  govet:
+    enable-all: true
+    disable:
+      - fieldalignment # too strict
+

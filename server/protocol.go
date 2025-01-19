@@ -3,15 +3,17 @@ package server
 import (
 	"crypto/ecdsa"
 	"fmt"
+
 	"github.com/go-jose/go-jose/v4"
 
 	. "go-citrus/internal"
 )
 
 /*
-McCallum-Relyea key exchange protocol, server operations.
-Reference from original implementation: https://github.com/latchset/tang/blob/master/src/keys.c
+	McCallum-Relyea key exchange protocol, server operations.
+	Reference from original implementation: https://github.com/latchset/tang/blob/master/src/keys.c
 */
+
 type Protocol struct {
 	advertisements map[string][]byte          // Advertisements lookup map - signing key thumbprint -> advertisement
 	exchange       map[string]jose.JSONWebKey // Recovery lookup map - exchange key thumbprint -> key map

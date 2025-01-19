@@ -3,6 +3,7 @@ package internal
 import (
 	"encoding/json"
 	"fmt"
+
 	"github.com/go-jose/go-jose/v4"
 )
 
