@@ -49,7 +49,8 @@ func (t *Advertisement) SigningKeys() KeyList {
 	return t.signingKeys
 }
 
-// Returns a signed advertised key set in JSON Web Signature(JWS) format
+// Marshall returns a signed advertised key set in JSON Web Signature(JWS) format.
+// Based on the JWS example: https://github.com/go-jose/go-jose/blob/c74720ddfdb440c7df134a12251ca6001073ba5a/doc_test.go#L90
 func (t *Advertisement) Marshall() ([]byte, error) {
 	var advertised KeyList
 	advertised = append(advertised, t.exchangeKeys...)
@@ -79,4 +80,34 @@ func (t *Advertisement) Marshall() ([]byte, error) {
 	}
 
 	return []byte(signature.FullSerialize()), nil
+}
+
+// ParseAdvertisement reverts the JWS-marshalled blob.
+// Based on the JWS example: https://github.com/go-jose/go-jose/blob/c74720ddfdb440c7df134a12251ca6001073ba5a/doc_test.go#L106
+func ParseAdvertisement(data []byte, signAlgorithms []jose.SignatureAlgorithm) (*Advertisement, error) {
+	jws, err := jose.ParseSigned(string(data), signAlgorithms)
+	if err != nil {
+		return nil, err
+	}
+
+	// Extract keys from payload
+	var advertised jose.JSONWebKeySet
+	if err = json.Unmarshal(jws.UnsafePayloadWithoutVerification(), &advertised); err != nil {
+		return nil, fmt.Errorf("unable to parse advertisement payload: %w", err)
+	}
+
+	result, err := NewAdvertisement(advertised.Keys...)
+	if err != nil {
+		return nil, err
+	}
+
+	// Validate JWS signatures. Payload-provided signing keys must sign the advertisement
+	for _, key := range result.signingKeys {
+		_, _, _, err = jws.VerifyMulti(key)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return result, nil
 }

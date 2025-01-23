@@ -5,6 +5,7 @@ import (
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"crypto/rand"
+	"encoding/base64"
 
 	"github.com/go-jose/go-jose/v4"
 )
@@ -66,17 +67,18 @@ func CreateExchangeKey(key interface{}) jose.JSONWebKey {
 }
 
 // Thumbprint
+var defaultThumbprintAlgorithm = []crypto.Hash{
+	crypto.SHA1,
+	crypto.SHA224,
+	crypto.SHA256,
+	crypto.SHA384,
+	crypto.SHA512,
+}
 
 func Thumbprints(key jose.JSONWebKey, algorithms ...crypto.Hash) ([]string, error) {
 	if len(algorithms) == 0 {
 		// default support key thumbprint algorithms
-		algorithms = []crypto.Hash{
-			crypto.SHA1,
-			crypto.SHA224,
-			crypto.SHA256,
-			crypto.SHA384,
-			crypto.SHA512,
-		}
+		algorithms = defaultThumbprintAlgorithm
 	}
 
 	var results []string
@@ -86,7 +88,7 @@ func Thumbprints(key jose.JSONWebKey, algorithms ...crypto.Hash) ([]string, erro
 			return nil, err
 		}
 
-		results = append(results, string(thp))
+		results = append(results, base64.RawURLEncoding.EncodeToString(thp))
 	}
 
 	return results, nil

@@ -37,14 +37,17 @@ func NewProtocol(adv KeyList) (*Protocol, error) {
 		return nil, err
 	}
 
+	// Always return the default advertisement,
 	p.advertisements[""] = bytes
 
+	// as well as the signing keys with provided thumbprints.
 	for _, key := range signing {
 		if err = p.addAdvertisementKey(key, bytes); err != nil {
 			return nil, err
 		}
 	}
 
+	// Add advertised exchange keys.
 	for _, key := range exchange {
 		if err = p.addExchangeKey(key); err != nil {
 			return nil, err

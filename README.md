@@ -2,11 +2,9 @@
 
 Reverse-engineer [Tang](https://github.com/latchset/tang) with both server and client implementation.
 
-To achieve a comprehensive demonstration of McCallum-Relyea Key Exchange. Written in Go.
+To achieve a comprehensive demonstration of McCallum-Relyea Key Exchange. Written in Go, object-oriented approach.
 
 ## TODO
-- Lint code
-- Parse JWS advertisement
 - Write unit-tests
 - Client computations and implementation
 - Walkthrough docs of McCallum-Relyea exchange
