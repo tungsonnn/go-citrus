@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"crypto/ecdh"
 	"crypto/elliptic"
 	"encoding/base64"
 	"math/big"
@@ -30,6 +29,6 @@ func TestECDHKey(t *testing.T) {
 
 	t.Run("creating a ECDH key", func(t *testing.T) {
 		pubECDH := sampleAlgo.key(x, y)
-		require.Equal(t, pubECDH.Curve(), ecdh.P521())
+		require.Equal(t, pubECDH.Curve, elliptic.P521())
 	})
 }

@@ -11,7 +11,8 @@ import (
 )
 
 const (
-	defaultExchangeAlgorithm = "ECMR"
+	defaultExchangeAlgorithm  = "ECMR"
+	DefaultSignatureAlgorithm = jose.ES512
 )
 
 // Helper functions related to Javascript Object Signing and Encryption (JOSE) framework
@@ -67,7 +68,7 @@ func CreateExchangeKey(key interface{}) jose.JSONWebKey {
 }
 
 // Thumbprint
-var defaultThumbprintAlgorithm = []crypto.Hash{
+var DefaultThumbprintAlgorithm = []crypto.Hash{
 	crypto.SHA1,
 	crypto.SHA224,
 	crypto.SHA256,
@@ -78,7 +79,7 @@ var defaultThumbprintAlgorithm = []crypto.Hash{
 func Thumbprints(key jose.JSONWebKey, algorithms ...crypto.Hash) ([]string, error) {
 	if len(algorithms) == 0 {
 		// default support key thumbprint algorithms
-		algorithms = defaultThumbprintAlgorithm
+		algorithms = DefaultThumbprintAlgorithm
 	}
 
 	var results []string

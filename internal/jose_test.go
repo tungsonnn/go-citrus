@@ -51,7 +51,7 @@ func TestThumbprints(t *testing.T) {
 	t.Run("default thumbprint algorithm", func(t *testing.T) {
 		actual, err := Thumbprints(ExchangeKey1)
 		require.NoError(t, err)
-		require.Len(t, actual, len(defaultThumbprintAlgorithm))
+		require.Len(t, actual, len(DefaultThumbprintAlgorithm))
 	})
 	t.Run("specific thumbprint algorithm", func(t *testing.T) {
 		actual, err := Thumbprints(ExchangeKey1, crypto.SHA256, crypto.SHA512)

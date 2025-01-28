@@ -1,8 +1,6 @@
 package internal
 
 import (
-	"crypto/rand"
-	"crypto/rsa"
 	"testing"
 
 	"github.com/go-jose/go-jose/v4"
@@ -25,7 +23,7 @@ func TestNewAdvertisement(t *testing.T) {
 	})
 
 	t.Run("testing advertisement with invalid key error", func(t *testing.T) {
-		invalidKey, err := rsa.GenerateKey(rand.Reader, 2048)
+		invalidKey, err := GenerateRSAKey()
 		require.NoError(t, err)
 		require.NotNil(t, invalidKey)
 
@@ -45,7 +43,7 @@ func TestAdvertisement_Marshall(t *testing.T) {
 		require.NoError(t, err)
 		require.NotEmpty(t, payload)
 
-		restored, err := ParseAdvertisement(payload, []jose.SignatureAlgorithm{jose.ES512})
+		restored, err := ParseAdvertisement(payload, []jose.SignatureAlgorithm{DefaultSignatureAlgorithm})
 		require.NoError(t, err)
 		require.NotNil(t, restored)
 
@@ -62,7 +60,7 @@ func TestAdvertisement_Marshall(t *testing.T) {
 		require.NoError(t, err)
 		require.NotEmpty(t, payload)
 
-		restored, err := ParseAdvertisement(payload, []jose.SignatureAlgorithm{jose.ES512})
+		restored, err := ParseAdvertisement(payload, []jose.SignatureAlgorithm{DefaultSignatureAlgorithm})
 		require.NoError(t, err)
 		require.NotNil(t, restored)
 
@@ -74,12 +72,12 @@ func TestAdvertisement_Marshall(t *testing.T) {
 func TestAdvertisement_Parse(t *testing.T) {
 	// Use payload from Marshal() tests to test the function.
 	t.Run("testing single signature advertisement", func(t *testing.T) {
-		_, err := ParseAdvertisement(singleSignatureAdvertisement, []jose.SignatureAlgorithm{jose.ES512})
+		_, err := ParseAdvertisement(singleSignatureAdvertisement, []jose.SignatureAlgorithm{DefaultSignatureAlgorithm})
 		require.NoError(t, err)
 	})
 
 	t.Run("testing multi signatures advertisement", func(t *testing.T) {
-		_, err := ParseAdvertisement(multipleSignatureAdvertisement, []jose.SignatureAlgorithm{jose.ES512})
+		_, err := ParseAdvertisement(multipleSignatureAdvertisement, []jose.SignatureAlgorithm{DefaultSignatureAlgorithm})
 		require.NoError(t, err)
 	})
 }
