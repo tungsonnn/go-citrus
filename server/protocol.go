@@ -15,9 +15,16 @@ import (
 */
 
 type Protocol struct {
-	advertisements map[string][]byte          // Advertisements lookup map - signing key thumbprint -> advertisement
-	exchange       map[string]jose.JSONWebKey // Recovery lookup map - exchange key thumbprint -> key map
+	advertisements map[string][]byte          // Advertisement lookup map - signing key thumbprint -> client advertisement
+	exchange       map[string]jose.JSONWebKey // Recovery lookup map - exchange key thumbprint -> server key map
 }
+
+/* ----- Server key advertisement -----
+Server possesses different Ecliptic-Curve (EC) key pairs (s, S) and advertise its public portion `s` to client.
+NOTE:
+	The advertisement thumbprint is in order for the server to find the correct signed server key advertisement to send to client,
+	while the exchange thumbprint is generated from the `s` key will be sent from client to find `S`.
+*/
 
 func NewProtocol(adv KeyList) (*Protocol, error) {
 	p := Protocol{
@@ -87,8 +94,11 @@ func (t *Protocol) addExchangeKey(key jose.JSONWebKey) error {
 	return nil
 }
 
-// Perform the ECMR key recovery using blinded client recovery request key 'x',
-// and the server private key 'S', identified using thumbprint.
+/*
+	Perform the ECMR key recovery using blinded client recovery request key 'x',
+	and the server private key 'S', identified using client-provided thumbprint thp(s).
+ 	Server recovery operation: y = x * S
+*/
 
 func (t *Protocol) Recover(thumbprint string, request []byte) ([]byte, error) {
 	var jwkX jose.JSONWebKey
